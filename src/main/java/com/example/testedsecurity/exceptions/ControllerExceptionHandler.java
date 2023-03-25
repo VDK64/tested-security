@@ -15,7 +15,7 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(value = {BookAlreadyExistsException.class, BookNotFoundException.class})
-    public ResponseEntity<ErrorDto> bookHandler(BookAlreadyExistsException exception) {
+    public ResponseEntity<ErrorDto> bookHandler(RuntimeException exception) {
         return new ResponseEntity<>(new ErrorDto(exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 

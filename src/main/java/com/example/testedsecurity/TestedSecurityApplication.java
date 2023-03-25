@@ -18,27 +18,27 @@ import static com.example.testedsecurity.security.entities.Role.USER;
 @SpringBootApplication
 public class TestedSecurityApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(TestedSecurityApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(TestedSecurityApplication.class, args);
+    }
 
-	@Bean
-	public CommandLineRunner createUser(BCryptPasswordEncoder encoder, UserRepository userRepository) {
-		return args -> {
-			User admin = new User(null, List.of(ADMIN), encoder.encode("p"), "admin",
-					true, true, true, true);
-			User user = new User(null, List.of(USER), encoder.encode("p"), "user",
-					true, true, true, true);
-			userRepository.save(admin);
-			userRepository.save(user);
-		};
-	}
+    @Bean
+    public CommandLineRunner createUser(BCryptPasswordEncoder encoder, UserRepository userRepository) {
+        return args -> {
+            User admin = new User(null, List.of(ADMIN), encoder.encode("p"), "admin",
+                    true, true, true, true);
+            User user = new User(null, List.of(USER), encoder.encode("p"), "user",
+                    true, true, true, true);
+            userRepository.save(admin);
+            userRepository.save(user);
+        };
+    }
 
-	@Bean
-	public CommandLineRunner createBook(BookRepository bookRepository) {
-		return args -> {
-			bookRepository.save(new Book(null, "First book"));
-		};
-	}
+    @Bean
+    public CommandLineRunner createBook(BookRepository bookRepository) {
+        return args -> {
+            bookRepository.save(new Book(null, "First book"));
+        };
+    }
 
 }

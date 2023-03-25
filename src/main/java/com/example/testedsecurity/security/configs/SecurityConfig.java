@@ -29,8 +29,13 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.UUID;
 
+import static com.example.testedsecurity.properties.BookProperties.BOOK_REQUEST_MAPPING;
+import static com.example.testedsecurity.properties.BookProperties.BOOK_REQUEST_MAPPING_WITH_PATH_VARIABLE;
+import static com.example.testedsecurity.properties.ExceptionsProperties.USER_NOT_FOUND_MESSAGE;
+import static com.example.testedsecurity.properties.RegisterProperties.REGISTER_REQUEST_MAPPING;
 import static com.example.testedsecurity.security.entities.Role.ADMIN;
 import static com.example.testedsecurity.security.entities.Role.USER;
+import static org.apache.logging.log4j.util.Strings.EMPTY;
 import static org.springframework.http.HttpMethod.*;
 
 @Configuration
@@ -49,12 +54,12 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/register").permitAll()
-                                .requestMatchers(GET, "/book").hasAnyRole(ADMIN.name(), USER.name())
-                                .requestMatchers(GET, "/book/{id}").hasAnyRole(ADMIN.name(), USER.name())
-                                .requestMatchers(POST, "/book").hasRole(ADMIN.name())
-                                .requestMatchers(DELETE, "/book").hasRole(ADMIN.name())
-                                .requestMatchers(PUT, "/book").hasRole(ADMIN.name())
+                                .requestMatchers(REGISTER_REQUEST_MAPPING).permitAll()
+                                .requestMatchers(GET, BOOK_REQUEST_MAPPING).hasAnyRole(ADMIN.name(), USER.name())
+                                .requestMatchers(GET, BOOK_REQUEST_MAPPING_WITH_PATH_VARIABLE).hasAnyRole(ADMIN.name(), USER.name())
+                                .requestMatchers(POST, BOOK_REQUEST_MAPPING).hasRole(ADMIN.name())
+                                .requestMatchers(DELETE, BOOK_REQUEST_MAPPING).hasRole(ADMIN.name())
+                                .requestMatchers(PUT, BOOK_REQUEST_MAPPING).hasRole(ADMIN.name())
                                 .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
@@ -66,7 +71,7 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        grantedAuthoritiesConverter.setAuthorityPrefix("");
+        grantedAuthoritiesConverter.setAuthorityPrefix(EMPTY);
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
@@ -77,7 +82,7 @@ public class SecurityConfig {
     public UserDetailsService userDetails() {
         return username -> userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(
-                        String.format("User with username: %s not found", username)));
+                        String.format(USER_NOT_FOUND_MESSAGE, username)));
     }
 
     @Bean

@@ -14,6 +14,9 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.stream.Collectors;
 
+import static com.example.testedsecurity.properties.LoginProperties.CLAIM_SCOPE;
+import static com.example.testedsecurity.properties.LoginProperties.ISSUER;
+
 @Service
 @RequiredArgsConstructor
 public class LoginServiceImpl implements LoginService {
@@ -27,11 +30,11 @@ public class LoginServiceImpl implements LoginService {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
         JwtClaimsSet claims = JwtClaimsSet.builder()
-                .issuer("self")
+                .issuer(ISSUER)
                 .issuedAt(now)
                 .expiresAt(now.plus(1, ChronoUnit.HOURS))
                 .subject(authentication.getName())
-                .claim("scope", scope)
+                .claim(CLAIM_SCOPE, scope)
                 .build();
         JwtEncoderParameters encoderParameters
                 = JwtEncoderParameters.from(claims);

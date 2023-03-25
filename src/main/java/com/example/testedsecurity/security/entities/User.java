@@ -11,8 +11,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-@Entity(name = "usr")
-@Table(name = "usr")
+import static com.example.testedsecurity.properties.RoleProperties.ROLE_PREFIX;
+import static com.example.testedsecurity.properties.UserProperties.ID;
+import static com.example.testedsecurity.properties.UserProperties.USER;
+
+@Entity(name = USER)
+@Table(name = USER)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,7 +24,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = ID, nullable = false)
     private Long id;
 
     private Collection<Role> roles;
@@ -41,7 +45,7 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream().map(
-                role -> new SimpleGrantedAuthority("ROLE_" + role.name())).collect(Collectors.toList());
+                role -> new SimpleGrantedAuthority(ROLE_PREFIX + role.name())).collect(Collectors.toList());
     }
 
 }

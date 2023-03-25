@@ -5,11 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import static com.example.testedsecurity.properties.BookProperties.BOOK;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Entity(name = "book")
-@Table(name = "book")
+@Entity(name = BOOK)
+@Table(name = BOOK)
 public class Book {
 
     @Id

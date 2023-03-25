@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.example.testedsecurity.properties.LoginProperties.LOGIN_REQUEST_MAPPING;
+
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/login")
+@RequestMapping(LOGIN_REQUEST_MAPPING)
 public class LoginController {
 
     private final LoginService loginService;

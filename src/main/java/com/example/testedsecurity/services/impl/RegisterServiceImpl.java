@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.List;
 
+import static com.example.testedsecurity.properties.RegisterProperties.USER_REGISTRATION_EXCEPTION_MESSAGE;
 import static com.example.testedsecurity.security.entities.Role.USER;
 
 @Service
@@ -36,8 +37,9 @@ public class RegisterServiceImpl implements RegisterService {
             userRepository.save(user);
 
         } catch (DataIntegrityViolationException exception) {
-            throw new UserRegistrationException(String.format("User with username: %s already exists", username));
+            throw new UserRegistrationException(String.format(USER_REGISTRATION_EXCEPTION_MESSAGE, username));
         }
         return new RegisterResponseDto(username);
     }
+
 }
