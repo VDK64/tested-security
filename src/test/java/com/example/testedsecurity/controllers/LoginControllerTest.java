@@ -20,6 +20,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql("/test-data.sql")
 class LoginControllerTest {
 
+    private static final String LOGIN_URL = "/login";
+
+    private static final String TEST_USERNAME = "test_user";
+
+    private static final String USER_USERNAME = "user";
+
+    private static final String PROPER_PASSWORD = "p";
+
+    private static final String WRONG_PASSWORD = "paasdasd";
+
+    private static final String EXCTRACT_TOKE_FROM_JSON = "$.token";
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -28,21 +40,21 @@ class LoginControllerTest {
 
     @Test
     public void testWithActualCredentials() throws Exception {
-        mockMvc.perform(post("/login").with(httpBasic("test_user", "p")))
+        mockMvc.perform(post(LOGIN_URL).with(httpBasic(TEST_USERNAME, PROPER_PASSWORD)))
                 .andExpectAll(status().isOk(),
                         content().contentType(APPLICATION_JSON),
-                        jsonPath("$.token", is(notNullValue())));
+                        jsonPath(EXCTRACT_TOKE_FROM_JSON, is(notNullValue())));
     }
 
     @Test
     public void testWithWrongCredentials() throws Exception {
-        mockMvc.perform(post("/login").with(httpBasic("user", "paasdasd")))
+        mockMvc.perform(post(LOGIN_URL).with(httpBasic(USER_USERNAME, WRONG_PASSWORD)))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     public void testWithoutCredentials() throws Exception {
-        mockMvc.perform(post("/login"))
+        mockMvc.perform(post(LOGIN_URL))
                 .andExpect(status().isUnauthorized());
     }
 
