@@ -28,7 +28,7 @@ public class User implements UserDetails {
     private Long id;
 
     @Enumerated(value = EnumType.STRING)
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"),
     uniqueConstraints = @UniqueConstraint(name = "user_role_constraint", columnNames = {"user_id", "roles"}))
     private Collection<Role> roles;
