@@ -58,7 +58,7 @@ public class SecurityConfig {
                                 .requestMatchers(GET, BOOK_REQUEST_MAPPING).hasAnyRole(ADMIN.name(), USER.name())
                                 .requestMatchers(GET, BOOK_REQUEST_MAPPING_WITH_PATH_VARIABLE).hasAnyRole(ADMIN.name(), USER.name())
                                 .requestMatchers(POST, BOOK_REQUEST_MAPPING).hasRole(ADMIN.name())
-                                .requestMatchers(DELETE, BOOK_REQUEST_MAPPING).hasRole(ADMIN.name())
+                                .requestMatchers(DELETE, BOOK_REQUEST_MAPPING_WITH_PATH_VARIABLE).hasRole(ADMIN.name())
                                 .requestMatchers(PUT, BOOK_REQUEST_MAPPING).hasRole(ADMIN.name())
                                 .anyRequest().authenticated()
                 )

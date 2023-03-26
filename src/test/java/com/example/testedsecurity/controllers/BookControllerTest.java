@@ -20,9 +20,7 @@ import static com.example.testedsecurity.properties.BookProperties.BOOK_REQUEST_
 import static com.example.testedsecurity.security.entities.Role.ADMIN;
 import static com.example.testedsecurity.security.entities.Role.USER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -131,7 +129,7 @@ class BookControllerTest {
                 .andExpect(status().isForbidden());
 
         Optional<Book> book = bookRepository.findByTitle("test book");
-        assertEquals(book, Optional.empty());
+        assertEquals(Optional.empty(), book);
     }
 
     @Test
@@ -142,7 +140,7 @@ class BookControllerTest {
                 .andExpect(status().isUnauthorized());
 
         Optional<Book> book = bookRepository.findByTitle("test book");
-        assertEquals(book, Optional.empty());
+        assertEquals(Optional.empty(), book);
     }
 
     @Test
@@ -150,16 +148,89 @@ class BookControllerTest {
         String token
                 = tokenUtility.generateToken(List.of(ADMIN), "admin");
 
-        mockMvc.perform(post(BOOK_REQUEST_MAPPING)
-                        .header("Authorization", "Bearer " + token)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(new BookDto("test book"))))
-                .andExpect(status().isForbidden());
+        Book savedBook = bookRepository.save(new Book(null, "test book"));
+
+        mockMvc.perform(delete("/book/" + savedBook.getId())
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk());
 
         Optional<Book> book = bookRepository.findByTitle("test book");
-        assertEquals(book, Optional.empty());
+        assertEquals(Optional.empty(), book);
     }
 
 
+    @Test
+    public void deleteBookByIdByUserTest() throws Exception {
+        String token
+                = tokenUtility.generateToken(List.of(USER), "user");
+
+        Book savedBook = bookRepository.save(new Book(null, "test book"));
+
+        mockMvc.perform(delete("/book/" + savedBook.getId())
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isForbidden());
+
+        bookRepository.deleteById(savedBook.getId());
+    }
+
+    @Test
+    public void deleteBookByIdWithoutTokenTest() throws Exception {
+        Book savedBook = bookRepository.save(new Book(null, "test book"));
+
+        mockMvc.perform(delete("/book/" + savedBook.getId()))
+                .andExpect(status().isUnauthorized());
+
+        bookRepository.deleteById(savedBook.getId());
+    }
+
+    @Test
+    public void updateBookByAdminTest() throws Exception {
+        String token
+                = tokenUtility.generateToken(List.of(ADMIN), "admin");
+
+        Book savedBook = bookRepository.save(new Book(null, "test book"));
+
+        mockMvc.perform(put("/book")
+                        .header("Authorization", "Bearer " + token)
+                        .param("id", String.valueOf(savedBook.getId()))
+                        .param("title", "updated title"))
+                .andExpect(status().isOk());
+
+        Book book = bookRepository.findById(savedBook.getId()).orElseThrow();
+        assertEquals("updated title", book.getTitle());
+        bookRepository.deleteById(savedBook.getId());
+    }
+
+    @Test
+    public void updateBookByUserTest() throws Exception {
+        String token
+                = tokenUtility.generateToken(List.of(USER), "user");
+
+        Book savedBook = bookRepository.save(new Book(null, "test book"));
+
+        mockMvc.perform(put("/book")
+                        .header("Authorization", "Bearer " + token)
+                        .param("id", String.valueOf(savedBook.getId()))
+                        .param("title", "updated title"))
+                .andExpect(status().isForbidden());
+
+        Book book = bookRepository.findById(savedBook.getId()).orElseThrow();
+        assertEquals("test book", book.getTitle());
+        bookRepository.deleteById(savedBook.getId());
+    }
+
+    @Test
+    public void updateBookWithoutTokenTest() throws Exception {
+        Book savedBook = bookRepository.save(new Book(null, "test book"));
+
+        mockMvc.perform(put("/book")
+                        .param("id", String.valueOf(savedBook.getId()))
+                        .param("title", "updated title"))
+                .andExpect(status().isUnauthorized());
+
+        Book book = bookRepository.findById(savedBook.getId()).orElseThrow();
+        assertEquals("test book", book.getTitle());
+        bookRepository.deleteById(savedBook.getId());
+    }
 
 }
