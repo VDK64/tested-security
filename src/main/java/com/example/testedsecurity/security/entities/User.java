@@ -27,6 +27,10 @@ public class User implements UserDetails {
     @Column(name = ID, nullable = false)
     private Long id;
 
+    @Enumerated(value = EnumType.STRING)
+    @ElementCollection
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"),
+    uniqueConstraints = @UniqueConstraint(name = "user_role_constraint", columnNames = {"user_id", "roles"}))
     private Collection<Role> roles;
 
     private String password;

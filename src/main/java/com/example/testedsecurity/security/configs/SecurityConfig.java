@@ -33,9 +33,9 @@ import static com.example.testedsecurity.properties.BookProperties.BOOK_REQUEST_
 import static com.example.testedsecurity.properties.BookProperties.BOOK_REQUEST_MAPPING_WITH_PATH_VARIABLE;
 import static com.example.testedsecurity.properties.ExceptionsProperties.USER_NOT_FOUND_MESSAGE;
 import static com.example.testedsecurity.properties.RegisterProperties.REGISTER_REQUEST_MAPPING;
+import static com.example.testedsecurity.properties.StringProperties.EMPTY;
 import static com.example.testedsecurity.security.entities.Role.ADMIN;
 import static com.example.testedsecurity.security.entities.Role.USER;
-import static org.apache.logging.log4j.util.Strings.EMPTY;
 import static org.springframework.http.HttpMethod.*;
 
 @Configuration
