@@ -63,7 +63,7 @@ public class SecurityConfig {
                                 .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
-                .httpBasic();
+                .httpBasic();//todo Disable httpBasic authentication and provide username/password authentication via LoginController
 
         return http.build();
     }
